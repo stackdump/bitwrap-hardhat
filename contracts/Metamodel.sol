@@ -38,7 +38,7 @@ interface Uint8ModelFactory {
     function declaration() external returns (Uint8Model.PetriNet memory);
 }
 
-contract MetamodelUint8  {
+abstract contract MetamodelUint8  {
 
     Uint8Model.Place[] internal places;
     Uint8Model.Transition[] internal transitions;
@@ -104,11 +104,7 @@ contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
         txn(1, places[uint8(prop)], fn(uint8(Properties.SIZE), uint8(action), uint8(role)));
     }
 
-    function declaration() public returns (Uint8Model.PetriNet memory) {
-        if (places.length > 0 || transitions.length > 0) { // memoize the model
-            return Uint8Model.PetriNet(places, transitions);
-        }
-
+    constructor() {
         cell(1, 1); // _00
         cell(1, 1); // _01
         cell(1, 1); // _02
@@ -144,39 +140,40 @@ contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
         addMove(Properties._20, Actions.O20, Roles.O);
         addMove(Properties._21, Actions.O21, Roles.O);
         addMove(Properties._22, Actions.O22, Roles.O);
+    }
 
+    function declaration() public view returns (Uint8Model.PetriNet memory) {
         return Uint8Model.PetriNet(places, transitions);
     }
 
 }
 
 contract TicTacToe is AccessControl {
-
+    uint256 internal gameId = 0;
     uint8 internal sequence = 0;
-    Uint8ModelFactory internal model;
+    Uint8ModelFactory internal model = new TicTacToeModel();
 
-    int8[] public state;
+    int8[] public state = new int8[](9);
 
-    event Action(uint8 seq, uint8 txnId, uint8 multiple, uint8 role, uint when);
+    event Action(uint256 gameId, uint8 seq, uint8 txnId, uint8 multiple, uint8 role, uint when);
 
     bytes32 public constant PLAYER_X = keccak256("PLAYER_X");
     bytes32 public constant PLAYER_O = keccak256("PLAYER_O");
 
     constructor(address p0, address p1) {
-
-        model = new TicTacToeModel(); // REVIEW: could not auto assign model.declaration().places to this contract
-                                      // UnimplementedFeatureError: Copying of type struct Uint8Model.Place memory[] memory to storage not yet supported.
-
-        // TODO: add random flip to assign roles
-
         _grantRole(PLAYER_X, p0);
         _grantRole(PLAYER_O, p1);
+        resetGame(TicTacToeModel.Roles.HALT);
+    }
 
-        // initialize the game
-        Uint8Model.Place[] memory places  = model.declaration().places;
-        for (uint8 i = 0; i < places.length; i++) {
-            state.push(places[i].initial);
+    function resetGame(TicTacToeModel.Roles role) private {
+        Uint8Model.Place[] memory places = model.declaration().places;
+        for (uint8 i = 0; i < state.length; i++) {
+            state[places[i].offset] = places[i].initial;
         }
+        sequence = 0;
+        gameId++;
+        emit Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
     }
 
     function fire(uint8 txnId, uint8 role) private returns (Uint8Model.Response memory) {
@@ -199,16 +196,11 @@ contract TicTacToe is AccessControl {
         return Uint8Model.Response(state, t.action, t.role, 1, true);
     }
 
-    // convenience function to check if it's my turn from the client
     function turnTest() public view  {
         if (sequence % 2 == 0) { // alternate X and O
-            if (!hasRole(PLAYER_X, msg.sender)) {
-                revert("Not your turn");
-            }
+            require(hasRole(PLAYER_X, msg.sender), "Not your turn");
         } else {
-            if (!hasRole(PLAYER_O, msg.sender)) {
-                revert("Not your turn");
-            }
+            require(hasRole(PLAYER_O, msg.sender), "Not your turn");
         }
     }
 
@@ -220,8 +212,16 @@ contract TicTacToe is AccessControl {
             t = fire(uint8(action), uint8(TicTacToeModel.Roles.O));
         }
         if (t.ok) {
-            emit Action(sequence, uint8(action), t.role, 1, block.timestamp);
+            emit Action(gameId, sequence, uint8(action), t.role, 1, block.timestamp);
         }
+    }
+
+    function resetX() public onlyRole(PLAYER_X) {
+        resetGame(TicTacToeModel.Roles.X);
+    }
+
+    function resetO() public onlyRole(PLAYER_O) {
+        resetGame(TicTacToeModel.Roles.O);
     }
 
     function X00() public onlyRole(PLAYER_X) {

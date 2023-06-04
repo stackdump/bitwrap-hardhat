@@ -13,7 +13,7 @@ describe("Metamodel", function () {
     // Contracts are deployed using the first signer/account by default
     const [owner, p0, p1] = await ethers.getSigners();
 
-    const contract = await ethers.getContractFactory("TicTacToe");
+    const contract = await ethers.getContractFactory("contracts/Metamodel.sol:TicTacToe");
     const api = await contract.deploy(p0.address, p1.address); // REVIEW: swap to test access ctl
     // console.log(api.from);
 
@@ -22,7 +22,7 @@ describe("Metamodel", function () {
 
   describe("Deployment", function () {
 
-    it("shoulw allow gameplay", async function () {
+    it("should allow gameplay", async function () {
       const { api , p0, p1} = await loadFixture(deployTestProxy);
       // console.log({api})
       const x = await api.connect(p0);
@@ -35,7 +35,14 @@ describe("Metamodel", function () {
       await x.X22(); // X wins
 
       await o.turnTest();
-      // await x.turnTest();
+      await x.resetX();
+      await x.turnTest();
+
+      await x.X11();
+      await o.O01();
+      await x.X00();
+      await o.O02();
+      await x.X22(); // X wins
     });
 
   });
