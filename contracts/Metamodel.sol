@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 library Uint8Model {
 
+    event Action(uint256 gameId, uint8 seq, uint8 txnId, uint8 multiple, uint8 role, uint when);
+
     struct PetriNet {
         Place[] places;
         Transition[] transitions;
@@ -151,11 +153,11 @@ contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
 contract TicTacToe is AccessControl {
     uint256 internal gameId = 0;
     uint8 internal sequence = 0;
+
+    // REVIEW: presumably this code could be altered to make the model update-able
     Uint8ModelFactory internal model = new TicTacToeModel();
 
     int8[] public state = new int8[](9);
-
-    event Action(uint256 gameId, uint8 seq, uint8 txnId, uint8 multiple, uint8 role, uint when);
 
     bytes32 public constant PLAYER_X = keccak256("PLAYER_X");
     bytes32 public constant PLAYER_O = keccak256("PLAYER_O");
@@ -173,7 +175,7 @@ contract TicTacToe is AccessControl {
         }
         sequence = 0;
         gameId++;
-        emit Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
+        emit Uint8Model.Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
     }
 
     function fire(uint8 txnId, uint8 role) private returns (Uint8Model.Response memory) {
@@ -204,6 +206,14 @@ contract TicTacToe is AccessControl {
         }
     }
 
+    function resetX() public onlyRole(PLAYER_X) {
+        resetGame(TicTacToeModel.Roles.X);
+    }
+
+    function resetO() public onlyRole(PLAYER_O) {
+        resetGame(TicTacToeModel.Roles.O);
+    }
+
     function move(TicTacToeModel.Actions action) private {
         Uint8Model.Response memory t;
         if (sequence % 2 == 0) { // alternate X and O
@@ -212,16 +222,8 @@ contract TicTacToe is AccessControl {
             t = fire(uint8(action), uint8(TicTacToeModel.Roles.O));
         }
         if (t.ok) {
-            emit Action(gameId, sequence, uint8(action), t.role, 1, block.timestamp);
+            emit Uint8Model.Action(gameId, sequence, uint8(action), t.role, 1, block.timestamp);
         }
-    }
-
-    function resetX() public onlyRole(PLAYER_X) {
-        resetGame(TicTacToeModel.Roles.X);
-    }
-
-    function resetO() public onlyRole(PLAYER_O) {
-        resetGame(TicTacToeModel.Roles.O);
     }
 
     function X00() public onlyRole(PLAYER_X) {
