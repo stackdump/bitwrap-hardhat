@@ -1,16 +1,20 @@
-# bitwrap models
+# Bitwrap Metamodels
 
 Verifiable Models for Smart Contracts.
 
-By shifting some of the duties of contract validation "Left" (earlier in development process).
-
-We can construct verifiable code more easily, in a way that most developers can understand and audit.
 
 ## Status
 
 Beta - testing in progress
 
-## Moitivation
+contracts/Metamodel_flattened.sol : 
+dweb:/ipfs/QmdoXKGzkm7MNabUTopnZAvcuk6ua2DDAshqaduit6jipV
+
+metadata.json : 
+dweb:/ipfs/Qma8LquieF254q1sUi1GaFhQgcxKcA8rVa1jnMgbFzKjf3
+
+
+Metadata and sources of "tictactoe" were published successfully.
 
 This project began at Consensus 2023 where I got nerd-sniped into thinking about apply petri-net models to smart contracts.
 

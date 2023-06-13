@@ -34,6 +34,11 @@ library Uint8Model {
         bool ok;
     }
 
+    // REVIEW: should we use this function to unpack declarations?
+    // function model(Uint8ModelFactory factory) external returns (PetriNet memory) {
+    //     return factory.declaration();
+    // }
+
 }
 
 interface Uint8ModelFactory {
@@ -170,9 +175,24 @@ contract TicTacToe is AccessControl {
 
     function resetGame(TicTacToeModel.Roles role) private {
         Uint8Model.Place[] memory places = model.declaration().places;
-        for (uint8 i = 0; i < state.length; i++) {
-            state[places[i].offset] = places[i].initial;
-        }
+        uint8 i = 0;
+        state[places[i].offset] = places[i].initial;
+        i = 1;
+        state[places[i].offset] = places[i].initial;
+        i = 2;
+        state[places[i].offset] = places[i].initial;
+        i = 3;
+        state[places[i].offset] = places[i].initial;
+        i = 4;
+        state[places[i].offset] = places[i].initial;
+        i = 5;
+        state[places[i].offset] = places[i].initial;
+        i = 6;
+        state[places[i].offset] = places[i].initial;
+        i = 7;
+        state[places[i].offset] = places[i].initial;
+        i = 8;
+        state[places[i].offset] = places[i].initial;
         sequence = 0;
         gameId++;
         emit Uint8Model.Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
@@ -186,12 +206,67 @@ contract TicTacToe is AccessControl {
         if (t.role != role) {
             revert("Role assertion failed");
         }
-        for (uint8 i = 0; i < t.delta.length; i++) {
-            if (t.delta[i] != 0) {
-                state[i] += t.delta[i];
-                if (state[i] < 0) {
-                    revert("Invalid state");
-                }
+        uint8 i = 0;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 1;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 2;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 3;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 4;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 5;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 6;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 7;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
+            }
+        }
+        i = 8;
+        if (t.delta[i] != 0) {
+            state[i] += t.delta[i];
+            if (state[i] < 0) {
+                revert("Invalid state");
             }
         }
         sequence++;

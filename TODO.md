@@ -1,9 +1,8 @@
+WIP
+---
 
-- [ ] build state machine !!! + add test
-
-
-- [ ] demonstrate flowDsl support in solidity
-- [ ] show how the solidity contract can make use of a Chainlink Oracle data feed (say for comodity swapping)
+- [ ] Design Metamodel-to-GUI Dapp
+- [ ] try to optimize storage - can declarations be re-used?
 
 
 ICEBOX
