@@ -173,29 +173,33 @@ contract TicTacToe is AccessControl {
         resetGame(TicTacToeModel.Roles.HALT);
     }
 
+    function init(Uint8Model.Place memory p) private {
+        state[p.offset] = p.initial;
+    }
+
     function resetGame(TicTacToeModel.Roles role) private {
         Uint8Model.Place[] memory places = model.declaration().places;
-        uint8 i = 0;
-        state[places[i].offset] = places[i].initial;
-        i = 1;
-        state[places[i].offset] = places[i].initial;
-        i = 2;
-        state[places[i].offset] = places[i].initial;
-        i = 3;
-        state[places[i].offset] = places[i].initial;
-        i = 4;
-        state[places[i].offset] = places[i].initial;
-        i = 5;
-        state[places[i].offset] = places[i].initial;
-        i = 6;
-        state[places[i].offset] = places[i].initial;
-        i = 7;
-        state[places[i].offset] = places[i].initial;
-        i = 8;
-        state[places[i].offset] = places[i].initial;
+        init(places[0]);
+        init(places[1]);
+        init(places[2]);
+        init(places[3]);
+        init(places[4]);
+        init(places[5]);
+        init(places[6]);
+        init(places[7]);
+        init(places[8]);
         sequence = 0;
         gameId++;
         emit Uint8Model.Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
+    }
+
+    function transform(uint8 i, Uint8Model.Transition memory t)  private {
+        if (t.delta[i] != 0) {
+            state[i] = state[i] + t.delta[i];
+            if (state[i] < 0) {
+                revert("invalidState");
+            }
+        }
     }
 
     function fire(uint8 txnId, uint8 role) private returns (Uint8Model.Response memory) {
@@ -206,69 +210,15 @@ contract TicTacToe is AccessControl {
         if (t.role != role) {
             revert("Role assertion failed");
         }
-        uint8 i = 0;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 1;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 2;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 3;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 4;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 5;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 6;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 7;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
-        i = 8;
-        if (t.delta[i] != 0) {
-            state[i] += t.delta[i];
-            if (state[i] < 0) {
-                revert("Invalid state");
-            }
-        }
+        transform(0, t);
+        transform(1, t);
+        transform(2, t);
+        transform(3, t);
+        transform(4, t);
+        transform(5, t);
+        transform(6, t);
+        transform(7, t);
+        transform(8, t);
         sequence++;
         return Uint8Model.Response(state, t.action, t.role, 1, true);
     }
