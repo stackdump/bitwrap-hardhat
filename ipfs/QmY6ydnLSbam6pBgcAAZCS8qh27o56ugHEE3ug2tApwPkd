@@ -910,6 +910,8 @@ pragma solidity ^0.8.18;
 
 library Uint8Model {
 
+    event Action(uint256 gameId, uint8 seq, uint8 txnId, uint8 multiple, uint8 role, uint when);
+
     struct PetriNet {
         Place[] places;
         Transition[] transitions;
@@ -919,8 +921,8 @@ library Uint8Model {
         uint8 offset;
         uint8 action;
         uint8 role;
-        int8[] guard;
         int8[] delta;
+        // int8[] guard; // REVIEW: we don't make use of guards in tic-tac-toe example
     }
 
     struct Place {
@@ -936,6 +938,11 @@ library Uint8Model {
         uint8 multiple;
         bool ok;
     }
+
+    // REVIEW: should we use this function to unpack declarations?
+    // function model(Uint8ModelFactory factory) external returns (PetriNet memory) {
+    //     return factory.declaration();
+    // }
 
 }
 
@@ -955,7 +962,7 @@ abstract contract MetamodelUint8  {
     }
 
     function fn(uint8 vectorSize, uint8 action, uint8 role) public returns (Uint8Model.Transition memory) {
-        Uint8Model.Transition memory t = Uint8Model.Transition(uint8(transitions.length), action, role, new int8[](vectorSize), new int8[](vectorSize));
+        Uint8Model.Transition memory t = Uint8Model.Transition(uint8(transitions.length), action, role, new int8[](vectorSize));
         transitions.push(t);
         return t;
     }
@@ -968,14 +975,12 @@ abstract contract MetamodelUint8  {
         transitions[t.offset].delta[p.offset] = int8(weight);
     }
 
-    function guard(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) public {
-        transitions[t.offset].guard[p.offset] = 0-int8(weight);
-    }
+    // function guard(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) public {
+    //    transitions[t.offset].guard[p.offset] = 0-int8(weight);
+    // }
 
 }
 
-// REVIEW visual model design in JS:
-// https://pflow.dev/chainlink2023/tictactoe/
 contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
 
     enum Roles{ X, O, HALT }
@@ -1053,14 +1058,11 @@ contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
 
 }
 
-contract TicTacToe is AccessControl {
+contract TicTacToe is AccessControl, TicTacToeModel {
     uint256 internal gameId = 0;
     uint8 internal sequence = 0;
-    Uint8ModelFactory internal model = new TicTacToeModel();
 
     int8[] public state = new int8[](9);
-
-    event Action(uint256 gameId, uint8 seq, uint8 txnId, uint8 multiple, uint8 role, uint when);
 
     bytes32 public constant PLAYER_X = keccak256("PLAYER_X");
     bytes32 public constant PLAYER_O = keccak256("PLAYER_O");
@@ -1071,32 +1073,51 @@ contract TicTacToe is AccessControl {
         resetGame(TicTacToeModel.Roles.HALT);
     }
 
+    function init(Uint8Model.Place memory p) private {
+        state[p.offset] = p.initial;
+    }
+
     function resetGame(TicTacToeModel.Roles role) private {
-        Uint8Model.Place[] memory places = model.declaration().places;
-        for (uint8 i = 0; i < state.length; i++) {
-            state[places[i].offset] = places[i].initial;
-        }
+        init(places[0]);
+        init(places[1]);
+        init(places[2]);
+        init(places[3]);
+        init(places[4]);
+        init(places[5]);
+        init(places[6]);
+        init(places[7]);
+        init(places[8]);
         sequence = 0;
         gameId++;
-        emit Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
+        emit Uint8Model.Action(gameId, sequence, uint8(TicTacToeModel.Actions.HALT), uint8(role), 1, block.timestamp);
+    }
+
+    function transform(uint8 i, Uint8Model.Transition memory t)  private {
+        if (t.delta[i] != 0) {
+            state[i] = state[i] + t.delta[i];
+            if (state[i] < 0) {
+                revert("invalidState");
+            }
+        }
     }
 
     function fire(uint8 txnId, uint8 role) private returns (Uint8Model.Response memory) {
-        Uint8Model.Transition memory t = model.declaration().transitions[txnId];
+        Uint8Model.Transition memory t = transitions[txnId];
         if (txnId != t.offset) {
             revert("Invalid action index");
         }
         if (t.role != role) {
             revert("Role assertion failed");
         }
-        for (uint8 i = 0; i < t.delta.length; i++) {
-            if (t.delta[i] != 0) {
-                state[i] += t.delta[i];
-                if (state[i] < 0) {
-                    revert("Invalid state");
-                }
-            }
-        }
+        transform(0, t);
+        transform(1, t);
+        transform(2, t);
+        transform(3, t);
+        transform(4, t);
+        transform(5, t);
+        transform(6, t);
+        transform(7, t);
+        transform(8, t);
         sequence++;
         return Uint8Model.Response(state, t.action, t.role, 1, true);
     }
@@ -1109,6 +1130,14 @@ contract TicTacToe is AccessControl {
         }
     }
 
+    function resetX() public onlyRole(PLAYER_X) {
+        resetGame(TicTacToeModel.Roles.X);
+    }
+
+    function resetO() public onlyRole(PLAYER_O) {
+        resetGame(TicTacToeModel.Roles.O);
+    }
+
     function move(TicTacToeModel.Actions action) private {
         Uint8Model.Response memory t;
         if (sequence % 2 == 0) { // alternate X and O
@@ -1117,16 +1146,8 @@ contract TicTacToe is AccessControl {
             t = fire(uint8(action), uint8(TicTacToeModel.Roles.O));
         }
         if (t.ok) {
-            emit Action(gameId, sequence, uint8(action), t.role, 1, block.timestamp);
+            emit Uint8Model.Action(gameId, sequence, uint8(action), t.role, 1, block.timestamp);
         }
-    }
-
-    function resetX() public onlyRole(PLAYER_X) {
-        resetGame(TicTacToeModel.Roles.X);
-    }
-
-    function resetO() public onlyRole(PLAYER_O) {
-        resetGame(TicTacToeModel.Roles.O);
     }
 
     function X00() public onlyRole(PLAYER_X) {

@@ -76,8 +76,6 @@ abstract contract MetamodelUint8  {
 
 }
 
-// REVIEW visual model design in JS:
-// https://pflow.dev/chainlink2023/tictactoe/
 contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
 
     enum Roles{ X, O, HALT }
@@ -155,12 +153,9 @@ contract TicTacToeModel is MetamodelUint8, Uint8ModelFactory {
 
 }
 
-contract TicTacToe is AccessControl {
+contract TicTacToe is AccessControl, TicTacToeModel {
     uint256 internal gameId = 0;
     uint8 internal sequence = 0;
-
-    // REVIEW: presumably this code could be altered to make the model update-able
-    Uint8ModelFactory internal model = new TicTacToeModel();
 
     int8[] public state = new int8[](9);
 
@@ -178,7 +173,6 @@ contract TicTacToe is AccessControl {
     }
 
     function resetGame(TicTacToeModel.Roles role) private {
-        Uint8Model.Place[] memory places = model.declaration().places;
         init(places[0]);
         init(places[1]);
         init(places[2]);
@@ -203,7 +197,7 @@ contract TicTacToe is AccessControl {
     }
 
     function fire(uint8 txnId, uint8 role) private returns (Uint8Model.Response memory) {
-        Uint8Model.Transition memory t = model.declaration().transitions[txnId];
+        Uint8Model.Transition memory t = transitions[txnId];
         if (txnId != t.offset) {
             revert("Invalid action index");
         }

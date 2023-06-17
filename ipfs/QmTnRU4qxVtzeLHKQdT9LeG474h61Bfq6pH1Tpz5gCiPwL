@@ -264,6 +264,162 @@
 			{
 				"inputs": [
 					{
+						"internalType": "int8",
+						"name": "initial",
+						"type": "int8"
+					},
+					{
+						"internalType": "int8",
+						"name": "capacity",
+						"type": "int8"
+					}
+				],
+				"name": "cell",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint8",
+								"name": "offset",
+								"type": "uint8"
+							},
+							{
+								"internalType": "int8",
+								"name": "initial",
+								"type": "int8"
+							},
+							{
+								"internalType": "int8",
+								"name": "capacity",
+								"type": "int8"
+							}
+						],
+						"internalType": "struct Uint8Model.Place",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "declaration",
+				"outputs": [
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "uint8",
+										"name": "offset",
+										"type": "uint8"
+									},
+									{
+										"internalType": "int8",
+										"name": "initial",
+										"type": "int8"
+									},
+									{
+										"internalType": "int8",
+										"name": "capacity",
+										"type": "int8"
+									}
+								],
+								"internalType": "struct Uint8Model.Place[]",
+								"name": "places",
+								"type": "tuple[]"
+							},
+							{
+								"components": [
+									{
+										"internalType": "uint8",
+										"name": "offset",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint8",
+										"name": "action",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint8",
+										"name": "role",
+										"type": "uint8"
+									},
+									{
+										"internalType": "int8[]",
+										"name": "delta",
+										"type": "int8[]"
+									}
+								],
+								"internalType": "struct Uint8Model.Transition[]",
+								"name": "transitions",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct Uint8Model.PetriNet",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "vectorSize",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "action",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "role",
+						"type": "uint8"
+					}
+				],
+				"name": "fn",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint8",
+								"name": "offset",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "action",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "role",
+								"type": "uint8"
+							},
+							{
+								"internalType": "int8[]",
+								"name": "delta",
+								"type": "int8[]"
+							}
+						],
+						"internalType": "struct Uint8Model.Transition",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "role",
 						"type": "bytes32"
@@ -416,6 +572,130 @@
 				"outputs": [],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "weight",
+						"type": "uint8"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint8",
+								"name": "offset",
+								"type": "uint8"
+							},
+							{
+								"internalType": "int8",
+								"name": "initial",
+								"type": "int8"
+							},
+							{
+								"internalType": "int8",
+								"name": "capacity",
+								"type": "int8"
+							}
+						],
+						"internalType": "struct Uint8Model.Place",
+						"name": "p",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint8",
+								"name": "offset",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "action",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "role",
+								"type": "uint8"
+							},
+							{
+								"internalType": "int8[]",
+								"name": "delta",
+								"type": "int8[]"
+							}
+						],
+						"internalType": "struct Uint8Model.Transition",
+						"name": "t",
+						"type": "tuple"
+					}
+				],
+				"name": "txn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "weight",
+						"type": "uint8"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint8",
+								"name": "offset",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "action",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "role",
+								"type": "uint8"
+							},
+							{
+								"internalType": "int8[]",
+								"name": "delta",
+								"type": "int8[]"
+							}
+						],
+						"internalType": "struct Uint8Model.Transition",
+						"name": "t",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint8",
+								"name": "offset",
+								"type": "uint8"
+							},
+							{
+								"internalType": "int8",
+								"name": "initial",
+								"type": "int8"
+							},
+							{
+								"internalType": "int8",
+								"name": "capacity",
+								"type": "int8"
+							}
+						],
+						"internalType": "struct Uint8Model.Place",
+						"name": "p",
+						"type": "tuple"
+					}
+				],
+				"name": "txn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -476,10 +756,10 @@
 	},
 	"sources": {
 		"contracts/Metamodel_flattened.sol": {
-			"keccak256": "0x8a83580b7dc65d305c9fca8b8b5a107fef9504cdb04d3f3384ca638849d9319a",
+			"keccak256": "0x657c0d40320ea3c6fe15ecd0194366af104e0924e405fa8a24e4a3ffa2fa3952",
 			"urls": [
-				"bzz-raw://372c29d1cd78310581f76fc8e0f6fcb878600a6d75a28456a567063f3b4c4da4",
-				"dweb:/ipfs/QmTdHVYhsmnRyBRsarqrFts7kzYnoe58HapSccnLTskcBE"
+				"bzz-raw://41f0ea8a72650b9359946cd189f0d0a1159b7930dcbe64133f2e9be8e68bb45e",
+				"dweb:/ipfs/QmY6ydnLSbam6pBgcAAZCS8qh27o56ugHEE3ug2tApwPkd"
 			]
 		}
 	},
