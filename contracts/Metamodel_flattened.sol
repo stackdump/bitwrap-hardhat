@@ -921,8 +921,8 @@ library Uint8Model {
         uint8 offset;
         uint8 action;
         uint8 role;
-        int8[] guard;
         int8[] delta;
+        // int8[] guard; // REVIEW: we don't make use of guards in tic-tac-toe example
     }
 
     struct Place {
@@ -962,7 +962,7 @@ abstract contract MetamodelUint8  {
     }
 
     function fn(uint8 vectorSize, uint8 action, uint8 role) public returns (Uint8Model.Transition memory) {
-        Uint8Model.Transition memory t = Uint8Model.Transition(uint8(transitions.length), action, role, new int8[](vectorSize), new int8[](vectorSize));
+        Uint8Model.Transition memory t = Uint8Model.Transition(uint8(transitions.length), action, role, new int8[](vectorSize));
         transitions.push(t);
         return t;
     }
@@ -975,9 +975,9 @@ abstract contract MetamodelUint8  {
         transitions[t.offset].delta[p.offset] = int8(weight);
     }
 
-    function guard(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) public {
-        transitions[t.offset].guard[p.offset] = 0-int8(weight);
-    }
+    // function guard(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) public {
+    //    transitions[t.offset].guard[p.offset] = 0-int8(weight);
+    // }
 
 }
 
