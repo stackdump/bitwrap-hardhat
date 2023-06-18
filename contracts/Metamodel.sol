@@ -50,27 +50,27 @@ abstract contract MetamodelUint8  {
     Uint8Model.Place[] internal places;
     Uint8Model.Transition[] internal transitions;
 
-    function cell(int8 initial, int8 capacity) public returns (Uint8Model.Place memory) {
+    function cell(int8 initial, int8 capacity) internal returns (Uint8Model.Place memory) {
         Uint8Model.Place memory p =  Uint8Model.Place(uint8(places.length), initial, capacity);
         places.push(p);
         return p;
     }
 
-    function fn(uint8 vectorSize, uint8 action, uint8 role) public returns (Uint8Model.Transition memory) {
+    function fn(uint8 vectorSize, uint8 action, uint8 role) internal returns (Uint8Model.Transition memory) {
         Uint8Model.Transition memory t = Uint8Model.Transition(uint8(transitions.length), action, role, new int8[](vectorSize));
         transitions.push(t);
         return t;
     }
 
-    function txn(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) public {
+    function txn(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) internal {
         transitions[t.offset].delta[p.offset] = 0-int8(weight);
     }
 
-    function txn(uint8 weight, Uint8Model.Transition memory t, Uint8Model.Place memory p) public {
+    function txn(uint8 weight, Uint8Model.Transition memory t, Uint8Model.Place memory p) internal {
         transitions[t.offset].delta[p.offset] = int8(weight);
     }
 
-    // function guard(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) public {
+    // function guard(uint8 weight, Uint8Model.Place memory p, Uint8Model.Transition memory t) internal {
     //    transitions[t.offset].guard[p.offset] = 0-int8(weight);
     // }
 
