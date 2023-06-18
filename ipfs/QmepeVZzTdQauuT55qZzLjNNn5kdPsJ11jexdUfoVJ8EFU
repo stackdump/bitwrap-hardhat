@@ -756,10 +756,10 @@
 	},
 	"sources": {
 		"contracts/Metamodel_flattened.sol": {
-			"keccak256": "0x657c0d40320ea3c6fe15ecd0194366af104e0924e405fa8a24e4a3ffa2fa3952",
+			"keccak256": "0x7777435e0413dc3cec58736fe7bf87e2461fe9444943885005e2316b2478212d",
 			"urls": [
-				"bzz-raw://41f0ea8a72650b9359946cd189f0d0a1159b7930dcbe64133f2e9be8e68bb45e",
-				"dweb:/ipfs/QmY6ydnLSbam6pBgcAAZCS8qh27o56ugHEE3ug2tApwPkd"
+				"bzz-raw://2f0e48a908caf063e201e1594864f8a221d16f001043b401cc36ad9ac930c7fc",
+				"dweb:/ipfs/QmXzYKPoH4kAc24WcyZfmgVgAFap159LiSwL4TBzG4CLnH"
 			]
 		}
 	},

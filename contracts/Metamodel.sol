@@ -234,14 +234,14 @@ contract TicTacToe is AccessControl, TicTacToeModel {
     }
 
     function move(TicTacToeModel.Actions action) private {
-        Uint8Model.Response memory t;
+        Uint8Model.Response memory response;
         if (sequence % 2 == 0) { // alternate X and O
-            t = fire(uint8(action), uint8(TicTacToeModel.Roles.X));
+            response = fire(uint8(action), uint8(TicTacToeModel.Roles.X));
         } else {
-            t = fire(uint8(action), uint8(TicTacToeModel.Roles.O));
+            response = fire(uint8(action), uint8(TicTacToeModel.Roles.O));
         }
-        if (t.ok) {
-            emit Uint8Model.Action(gameId, sequence, uint8(action), t.role, 1, block.timestamp);
+        if (response.ok) {
+            emit Uint8Model.Action(gameId, sequence, uint8(action), response.role, 1, block.timestamp);
         }
     }
 

@@ -7,29 +7,6 @@ Verifiable Models for Smart Contracts.
 
 Beta - testing in progress
 
-contracts/Metamodel_flattened.sol : 
-dweb:/ipfs/QmdoXKGzkm7MNabUTopnZAvcuk6ua2DDAshqaduit6jipV
+Deployed to:
 
-metadata.json : 
-dweb:/ipfs/Qma8LquieF254q1sUi1GaFhQgcxKcA8rVa1jnMgbFzKjf3
-
-
-Metadata and sources of "tictactoe" were published successfully.
-
-This project began at Consensus 2023 where I got nerd-sniped into thinking about apply petri-net models to smart contracts.
-
-![image](https://github.com/stackdump/bitwrap-hardhat/assets/243500/53fc886b-39f1-47f8-b670-317f0004c296)
-
-![image](https://github.com/stackdump/bitwrap-hardhat/assets/243500/ebe5dc1a-854b-44d3-afe5-8d108271bd0f)
-
-## Petri-Nets
-
-![image](https://github.com/stackdump/bitwrap-hardhat/assets/243500/9c445153-7214-48ae-8a38-a9b636441014)
-
-![image](https://github.com/stackdump/bitwrap-hardhat/assets/243500/3b098f6f-ac31-4cd6-bcf5-da4974c5e556)
-
-## Metamodels
-
-![image](https://github.com/stackdump/bitwrap-hardhat/assets/243500/7d7becac-6275-4ffa-b87f-98b07b52f4cc)
-
-![image](https://github.com/stackdump/bitwrap-hardhat/assets/243500/3a2c4172-f013-4c14-ab83-ed3cc51a4840)
+https://sepolia.etherscan.io/tx/0x915437da5d7a0ca75f585f5e50fc5a2835c785ea54aecbe3031d6b17795423b5
